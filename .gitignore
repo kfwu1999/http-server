@@ -1,0 +1,88 @@
+# Ignore all
+*
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+# Building dir
+**/build
+**/cmake-build-debug
+**/debug
+**/release
+**/.idea
+
+# Prerequisites
+*.d
+
+# DrawIO
+*.drawio
+*.dtmp
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+*.pyc
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+*.cache/
+
+# Backup files
+*.swp
+*.bak
+*.asv
+*.bkp
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Tashes
+ehthumbs.db
+Thumbs.db
