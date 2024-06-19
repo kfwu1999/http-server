@@ -24,8 +24,11 @@ SocketRAII::SocketRAII(int domain, int type, int protocol) {
 
 
 SocketRAII::~SocketRAII() {
-    if (m_sockfd >= 0)
+    if (m_sockfd >= 0) {
+        HTTP_TRACE("SocketRAII destroyed, closing fd #{}", m_sockfd);
         close(m_sockfd);
+    }
+
 }
 
 
@@ -46,8 +49,10 @@ SocketRAII& SocketRAII::operator=(SocketRAII&& other) noexcept {
 
 void SocketRAII::create(int domain, int type, int protocol) {
     reset(socket(domain, type, protocol));
-    if (m_sockfd < 0)
+    if (m_sockfd < 0) {
+        HTTP_ERROR("Failed to create socket");
         throw std::runtime_error("Failed to create socket");
+    }
 }
 
 

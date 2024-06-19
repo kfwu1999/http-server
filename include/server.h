@@ -56,8 +56,10 @@ private:
      * \brief Handles the connection from a client.
      *
      * Read request from server socket, and send back the corresponding http response.
+     *
+     * \param clientfd: The sockfd of client socket.
      */
-    void handleConnection(SocketRAII& clientSocket);
+    static void handleConnection(int clientfd);
 
 /**/
 private:

@@ -2,7 +2,8 @@
  * \file src/server.cpp
  */
 
-#include <stdexcept>      // std::runtime_error
+#include <stdexcept>   // std::runtime_error
+#include <thread>
 
 #include "server.h"
 #include "log.h"
@@ -39,8 +40,11 @@ void HttpServer::start() {
     m_serverSocket.startListening();
 
     // 
-    SocketRAII clientSocket(m_serverSocket.acceptConnection());
-    handleConnection(clientSocket);
+    while (m_isRunning) {
+        int clientfd = m_serverSocket.acceptConnection();
+        std::thread clientThread(handleConnection, clientfd);
+        clientThread.detach();
+    }
 }
 
 
@@ -52,11 +56,12 @@ void HttpServer::stop() {
 }
 
 
-void HttpServer::handleConnection(SocketRAII& clientSocket) {
-    // 
-    char buffer[1024];
+void HttpServer::handleConnection(int clientfd) {
+    // Use SocketRAII to manage the lifecycle of the client socket
+    SocketRAII clientSocket(clientfd);
 
-    // 
+    // read raw data of request from client socket
+    char buffer[1024];
     int bytesRead = read(clientSocket.get(), buffer, sizeof(buffer));
     if (bytesRead < 0) {
         HTTP_ERROR("Failed to read from client socket #{}. Error: {}", clientSocket.get(), strerror(errno));
@@ -74,7 +79,7 @@ void HttpServer::handleConnection(SocketRAII& clientSocket) {
         HTTP_ERROR("Failed to send response to client socket #{}. Error: {}", clientSocket.get(), strerror(errno));
         throw std::runtime_error("Failed to send response to client socket");
     }
-    HTTP_INFO("Sent {} bytes to client socket #{}", bytesSent, clientSocket.get());
+    HTTP_INFO("Response sent to client socket #{}", clientSocket.get());
 }
 
 
