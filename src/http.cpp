@@ -3,11 +3,11 @@
  */
 
 #include <exception>
-#include <iostream>
 #include <sstream>
 #include <unordered_map>
 
 #include "http.h"
+#include "log.h"
 
 
 namespace http {
@@ -30,6 +30,9 @@ std::string statusCode2str(HttpStatusCode code) {
 
 std::string HttpRequestHandler::handleRequest(const std::string& request) {
     // 
+    HTTP_TRACE("Handling HTTP request of length {}", request.size());
+
+    // 
     HttpResponseBuilder responseBuilder;
 
     // 
@@ -40,15 +43,20 @@ std::string HttpRequestHandler::handleRequest(const std::string& request) {
         // 
         if (m_method == "GET") {
             handleGetRequest(responseBuilder);
+        } else {
+            responseBuilder.setStatusCode(HttpStatusCode::BadRequest);
+            HTTP_WARN("Unsupported HTTP method: {}", m_method);
         }
 
     } catch (const std::exception& e) {
-        std::cerr << "Error handling request: " << e.what() << std::endl;
+        HTTP_ERROR("Error handling request: {}", e.what());
         responseBuilder.setStatusCode(HttpStatusCode::BadRequest);
     }
 
     // 
-    return responseBuilder.build();
+    std::string response = responseBuilder.build();
+    HTTP_INFO("Handled request, generated response of length {}", response.size());
+    return response;
 }
 
 
@@ -63,6 +71,7 @@ void HttpRequestHandler::parseRequest(const std::string& request) {
     lineStream >> m_method;
     lineStream >> m_path;
     lineStream >> m_version;
+    HTTP_INFO("Parsed request line: method = {}, path = {}, version = {}", m_method, m_path, m_version);
 
     // Parse headers
     while (std::getline(requestStream, line) && line != "\r") {
@@ -79,6 +88,8 @@ void HttpRequestHandler::parseRequest(const std::string& request) {
             auto crPos = headerValue.find_last_of('\r');
             headerValue = headerValue.substr(0, crPos);
             m_headers[headerName] = headerValue;
+
+            HTTP_INFO("Parsed header: {}: {}", headerName, headerValue);
         }
     }
 
@@ -86,15 +97,22 @@ void HttpRequestHandler::parseRequest(const std::string& request) {
     while (std::getline(requestStream, line)) {
         m_body += line;
     }
+    HTTP_INFO("Parsed body of length {}", m_body.size());
 }
 
 
 void HttpRequestHandler::handleGetRequest(HttpResponseBuilder& responseBuilder) {
+    // 
+    HTTP_TRACE("Handling GET request for path '{}'", m_path);
+
+    // 
     if (m_path == "/") {
         responseBuilder.setStatusCode(HttpStatusCode::OK);
+        HTTP_INFO("Responding to GET request for '/' with status 200 OK");
     }
     else {
         responseBuilder.setStatusCode(HttpStatusCode::NotFound);
+        HTTP_WARN("Resource not found for path {}", m_path);
     }
 }
 
@@ -117,6 +135,9 @@ void HttpResponseBuilder::setBody(const std::string& body) {
 
 std::string HttpResponseBuilder::build() {
     // 
+    HTTP_TRACE("Building HTTP response with status code {}", static_cast<int>(m_statusCode));
+
+    // 
     std::string response;
 
     // status line
@@ -138,6 +159,7 @@ std::string HttpResponseBuilder::build() {
     }
 
     // 
+    HTTP_INFO("Built HTTP response of length {}", response.size());
     return response;
 }
 

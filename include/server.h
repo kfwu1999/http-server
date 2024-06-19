@@ -28,6 +28,13 @@ public:
      */
     explicit HttpServer(int port);
 
+    /**
+     * \brief Destructor
+     *
+     * Shutdown the logger when HttpServer destruct.
+     */
+    ~HttpServer();
+
 /**/
 public:
     /**

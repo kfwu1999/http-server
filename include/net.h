@@ -27,7 +27,7 @@ public:
      *
      * \param sockfd: The file descriptor of existing socket.
      */
-    explicit SocketRAII(int sockfd);
+    explicit SocketRAII(int sockfd = -1);
 
     /**
      * \brief Constructs a SocketRAII object by creating a new socket.
@@ -68,11 +68,22 @@ public:
 /**/
 public:
     /**
+     */
+    void create(int domain, int type, int protocol);
+
+    /**
      * \brief Get the socket fd.
      *
      * \return sockfd
      */
     int get() const;
+
+    /**
+     * \brief Resets the socket file descriptor.
+     * 
+     * \param newSockFD The new socket file descriptor to manage, or -1 to indicate no socket.
+     */
+    void reset(int newSockFD = -1);
 
 private:
     int m_sockfd;
@@ -102,6 +113,10 @@ public:
 
 /**/
 public:
+    /**
+     */
+    void createSocket();
+
     /**
      * \brief Set the SO_REUSEADDR socket option on a server socket. 
      *
