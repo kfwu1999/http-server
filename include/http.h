@@ -141,6 +141,15 @@ private:
      */
     void handleGetRequest(HttpResponseBuilder& responseBuilder);
 
+    /**
+     * \brief Handles the HTTP GET request for the "/echo" path.
+     *
+     * Respond the echoes of request details.
+     *
+     * \param responseBuilder The HttpResponse object to build the response.
+     */
+    void handleEcho(HttpResponseBuilder& responseBuilder);
+
 /**/
 private:
     std::string m_method;
