@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+        ul {
+            text-align: left;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .indented {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to My HTTP Server</h1>
+        <p>This is the default home page.</p>
+        <ul>
+            <li><a href="/echo">Echo Endpoint</a> - Echoes back the request details for testing and debugging.</li>
+            <li>Status code example images:</li>
+            <li class="indented"><a href="/status/200.jpg">200 OK</a></li>
+            <li class="indented"><a href="/status/400.jpg">400 Bad Request</a></li>
+            <li class="indented"><a href="/status/404.jpg">404 Not Found</a></li>
+            <li class="indented"><a href="/status/500.jpg">500 Internal Server Error</a></li>
+        </ul>
+    </div>
+</body>
+</html>

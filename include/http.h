@@ -7,6 +7,7 @@
 #ifndef HTTP_H_
 #define HTTP_H_
 
+#include <vector>
 #include <string>
 #include <unordered_map>
 
@@ -19,9 +20,10 @@ namespace http {
  * \ref: https://github.com/j-ulrich/http-status-codes-cpp
  */
 enum class HttpStatusCode {
-    OK         = 200,
-    NotFound   = 404,
-    BadRequest = 400,
+    OK                  = 200,
+    NotFound            = 404,
+    BadRequest          = 400,
+    InternalServerError = 500,
 };
 
 
@@ -72,7 +74,8 @@ public:
      *
      * \param body The string content to set as the response body.
      */
-    void setBody(const std::string& bodh);
+    void setBody(const std::string& body);
+    void setBody(const std::vector<unsigned char>& body);
 
     /**
      * \brief Builds the http response message.
@@ -85,7 +88,7 @@ public:
 /**/
 private:
     HttpStatusCode m_statusCode;
-    std::string m_body;
+    std::vector<unsigned char> m_body;
     std::unordered_map<std::string, std::string> m_headers;
 };
 
@@ -149,6 +152,26 @@ private:
      * \param responseBuilder The HttpResponse object to build the response.
      */
     void handleEcho(HttpResponseBuilder& responseBuilder);
+
+    /**
+     * \brief Serves a static file based on the request path.
+     *
+     * \param responseBuilder: The HttpResponse object to build the response.
+     */
+    void serveStaticFile(HttpResponseBuilder& responseBuilder);
+
+    /**
+     * \brief Serves an status code image based on the status code.
+     *
+     * \param responseBuilder: The HttpResponse object to build the response.
+     * \param statusCode: The HTTP status code.
+     * \param statusCodeStr: The string representation of the HTTP status code.
+     *
+     * \note This function does not call serveStaticFile to avoid recursive
+     * calls, which can occur when an error happens while serving a static file.
+     */
+    void serveStatusCodeImage(HttpResponseBuilder& responseBuilder, HttpStatusCode statusCode);
+
 
 /**/
 private:

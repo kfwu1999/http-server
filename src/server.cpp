@@ -11,6 +11,8 @@
 #include "http.h"
 
 
+#define BUFFER_SIZE 1024
+
 namespace http {
 
 HttpServer::HttpServer(int port) 
@@ -61,7 +63,7 @@ void HttpServer::handleConnection(int clientfd) {
     SocketRAII clientSocket(clientfd);
 
     // read raw data of request from client socket
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
     int bytesRead = read(clientSocket.get(), buffer, sizeof(buffer));
     if (bytesRead < 0) {
         HTTP_ERROR("Failed to read from client socket #{}. Error: {}", clientSocket.get(), strerror(errno));
