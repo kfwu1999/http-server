@@ -8,6 +8,7 @@
 #define SERVER_H_
 
 #include "net.h"
+#include "thread_pool.hpp"
 
 
 namespace http {
@@ -65,6 +66,7 @@ private:
 private:
     bool         m_isRunning;
     ServerSocket m_serverSocket;
+    ThreadPool   m_threadPool;
 };
 
 

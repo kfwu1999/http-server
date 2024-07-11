@@ -3,12 +3,12 @@
  */
 
 #include <stdexcept>   // std::runtime_error
-#include <thread>
 
 #include "server.h"
 #include "log.h"
 #include "net.h"
 #include "http.h"
+#include "thread_pool.hpp"
 
 
 #define BUFFER_SIZE 1024
@@ -44,8 +44,7 @@ void HttpServer::start() {
     // 
     while (m_isRunning) {
         int clientfd = m_serverSocket.acceptConnection();
-        std::thread clientThread(handleConnection, clientfd);
-        clientThread.detach();
+        m_threadPool.submit(std::bind(handleConnection, clientfd));
     }
 }
 
