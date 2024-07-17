@@ -15,8 +15,8 @@
 
 namespace http {
 
-HttpServer::HttpServer(int port) 
-    : m_isRunning(false), m_serverSocket(port)
+HttpServer::HttpServer(int port, std::size_t cacheSize) 
+    : m_isRunning(false), m_serverSocket(port), m_cache(cacheSize)
 {
     Log::init();
     HTTP_TRACE("HttpSever created");
@@ -44,7 +44,10 @@ void HttpServer::start() {
     // 
     while (m_isRunning) {
         int clientfd = m_serverSocket.acceptConnection();
-        m_threadPool.submit(std::bind(handleConnection, clientfd));
+        // The `HttpRequestHandler` in ``handleConnection`` will access member variables
+        // `m_cache` and `m_cacheMtx`, so the `handleConnection` can't be static.
+        // Need to pass `this` into thread function.
+        m_threadPool.submit(std::bind(&HttpServer::handleConnection, this, clientfd));
     }
 }
 
@@ -71,7 +74,7 @@ void HttpServer::handleConnection(int clientfd) {
     HTTP_INFO("Read {} bytes from client socket #{}", bytesRead, clientSocket.get());
 
     // process the request and get the response
-    HttpRequestHandler handler;
+    HttpRequestHandler handler(m_cache, m_cacheMtx);
     std::string response = handler.handleRequest(std::string(buffer));
 
     // send response back to client

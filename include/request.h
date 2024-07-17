@@ -9,8 +9,10 @@
 
 #include <string>
 #include <unordered_map>
+#include <mutex>
 
 #include "response.h"
+#include "cache.h"
 
 
 namespace http {
@@ -42,7 +44,8 @@ public:
     /**
      * \brief Default constructor
      */
-    explicit HttpRequestHandler() = default;
+    HttpRequestHandler(LRUCache& cache, std::mutex& cacheMtx)
+        : r_cache(cache), r_cacheMtx(cacheMtx) {}
 
     /**
      * \brief Default destructor
@@ -105,6 +108,10 @@ private:
      * calls, which can occur when an error happens while serving a static file.
      */
     void serveStatusCodeImage(HttpResponseBuilder& responseBuilder, const HttpStatusCode& statusCode);
+
+private:
+    LRUCache&   r_cache;
+    std::mutex& r_cacheMtx;
 };
 
 

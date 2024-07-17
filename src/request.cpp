@@ -4,6 +4,7 @@
 
 #include <exception>
 #include <filesystem>
+#include <mutex>
 
 #include "request.h"
 #include "response.h"
@@ -135,16 +136,37 @@ void HttpRequestHandler::serveStaticFile(HttpRequest& httpRequest, HttpResponseB
         std::string filepath = mapUrlToFilePath(httpRequest.path);
         std::string extension = std::filesystem::path(filepath).extension().string();
 
-        // read file content
-        std::vector<unsigned char> fileContent = loadFile(filepath);
+        // 
+        std::vector<unsigned char> cacheContent;
+        std::vector<unsigned char> fileContent;
+
+        // minimize the critical section
+        {
+            std::lock_guard<std::mutex> lock(r_cacheMtx);
+            cacheContent = r_cache.get(filepath);
+        }
+
+        // 
+        if (cacheContent.empty()) {
+            // 
+            fileContent = loadFile(filepath);
+
+            // minimize the critical section
+            {
+                std::lock_guard<std::mutex> lock(r_cacheMtx);
+                r_cache.put(filepath, fileContent);
+            }
+            HTTP_INFO("Served static file '{}'", filepath);
+        }
+        else {
+            fileContent = cacheContent;
+            HTTP_INFO("Served static file from cache");
+        }
 
         // 
         responseBuilder.setStatusCode(HttpStatusCode::OK);
         responseBuilder.setHeader("Content-Type", getMimeType(extension));
         responseBuilder.setBody(fileContent);
-
-        // 
-        HTTP_INFO("Served static file '{}'", filepath);
     }
     catch (const std::runtime_error& e) {
         HTTP_ERROR("File not found: {}", e.what());
@@ -164,16 +186,37 @@ void HttpRequestHandler::serveStatusCodeImage(HttpResponseBuilder& responseBuild
         std::string filepath = BASE_DIRECTORY + "/status/" + std::to_string(static_cast<int>(statusCode)) + ".jpg";
         std::string extension = std::filesystem::path(filepath).extension().string();
 
-        // read file content
-        std::vector<unsigned char> fileContent = loadFile(filepath);
+        // 
+        std::vector<unsigned char> cacheContent;
+        std::vector<unsigned char> fileContent;
+
+        // minimize the critical section
+        {
+            std::lock_guard<std::mutex> lock(r_cacheMtx);
+            cacheContent = r_cache.get(filepath);
+        }
+
+        // 
+        if (cacheContent.empty()) {
+            // 
+            fileContent = loadFile(filepath);
+
+            // minimize the critical section
+            {
+                std::lock_guard<std::mutex> lock(r_cacheMtx);
+                r_cache.put(filepath, fileContent);
+            }
+            HTTP_INFO("Served status code image '{}'", filepath);
+        }
+        else {
+            fileContent = cacheContent;
+            HTTP_INFO("Served status code image from cache");
+        }
 
         // 
         responseBuilder.setStatusCode(statusCode);
         responseBuilder.setHeader("Content-Type", getMimeType(extension));
         responseBuilder.setBody(fileContent);
-
-        // 
-        HTTP_INFO("Served status code image '{}'", filepath);
     }
     catch (const std::exception& e) {
         // Image can't be loaded, use plain text message.

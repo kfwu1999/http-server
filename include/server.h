@@ -7,12 +7,13 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
+#include <mutex>
+
 #include "net.h"
 #include "thread_pool.hpp"
-
+#include "cache.h"
 
 namespace http {
-
 
 /**
  * \brief 
@@ -27,7 +28,7 @@ public:
      *
      * \param port: The port number that the server will listen for connections.
      */
-    explicit HttpServer(int port);
+    HttpServer(int port, std::size_t cacheSize);
 
     /**
      * \brief Destructor
@@ -60,15 +61,16 @@ private:
      *
      * \param clientfd: The sockfd of client socket.
      */
-    static void handleConnection(int clientfd);
+    void handleConnection(int clientfd);
 
 /**/
 private:
     bool         m_isRunning;
     ServerSocket m_serverSocket;
     ThreadPool   m_threadPool;
+    LRUCache     m_cache;
+    std::mutex   m_cacheMtx;
 };
-
 
 } // namespace http::
 

@@ -7,7 +7,8 @@
 
 int main() {
     // 
-    http::HttpServer server(PORT_NUM);
+    std::size_t cacheSize = 10;
+    http::HttpServer server(PORT_NUM, cacheSize);
     server.start();
     server.stop();
 

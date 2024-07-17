@@ -10,6 +10,7 @@
 #include <string>
 #include <list>
 #include <unordered_map>
+#include <vector>
 
 
 namespace http {
@@ -20,7 +21,7 @@ class LRUCache {
 private:
     struct CacheEntry {
         std::string path;
-        std::string body;
+        std::vector<unsigned char> body;
     };
 
 public:
@@ -35,7 +36,7 @@ public:
      * \param path: The path of the file.
      * \param body: The content of the file.
      */
-    void put(const std::string& path, const std::string& body);
+    void put(const std::string& path, const std::vector<unsigned char>& body);
 
     /**
      * \brief Get the content of a file from the cache.
@@ -43,7 +44,7 @@ public:
      * \param path: The path of the file.
      * \return The content of the file, or an empty string if not found.
      */
-    std::string get(const std::string& path);
+    std::vector<unsigned char> get(const std::string& path);
 
 private:
     std::size_t m_capacity;
