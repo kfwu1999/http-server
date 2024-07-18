@@ -73,9 +73,21 @@ private:
      * Processes the parsed HTTP GET request and prepares an appropriate http 
      * response using the provided HttpResponse object.
      *
+     * \param httpRequest: The HTTP request containing the uploaded file data.
      * \param responseBuilder: The HttpResponse object to build the response.
      */
     void handleGetRequest(HttpRequest& httpRequest, HttpResponseBuilder& responseBuilder);
+
+    /**
+     * \brief Handles the HTTP POST request.
+     *
+     * Processes the parsed HTTP POST request and prepares an appropriate http 
+     * response using the provided HttpResponse object.
+     *
+     * \param httpRequest: The HTTP request containing the uploaded file data.
+     * \param responseBuilder: The HttpResponse object to build the response.
+     */
+    void handlePostRequest(HttpRequest& httpRequest, HttpResponseBuilder& responseBuilder);
 
 /**/
 private:
@@ -84,13 +96,28 @@ private:
      *
      * Respond the echoes of request details.
      *
+     * \param httpRequest: The HTTP request containing the uploaded file data.
      * \param responseBuilder The HttpResponse object to build the response.
      */
     void handleEcho(HttpRequest& httpRequest, HttpResponseBuilder& responseBuilder);
 
     /**
+     * \brief Handles HTTP POST requests for uploading files.
+     *
+     * Stores the upload content to the txt file in predefined directory.
+     *
+     * \param httpRequest: The HTTP request containing the uploaded file data.
+     * \param responseBuilder The HttpResponse object to build the response.
+     */
+    void handleUpload(HttpRequest& httpRequest, HttpResponseBuilder& responseBuilder);
+
+
+/**/
+private:
+    /**
      * \brief Serves a static file based on the request path.
      *
+     * \param httpRequest: The HTTP request containing the uploaded file data.
      * \param responseBuilder: The HttpResponse object to build the response.
      */
     void serveStaticFile(HttpRequest& httpRequest, HttpResponseBuilder& responseBuilder);
@@ -102,7 +129,6 @@ private:
      *
      * \param responseBuilder: The HttpResponse object to build the response.
      * \param statusCode: The HTTP status code.
-     * \param statusCodeStr: The string representation of the HTTP status code.
      *
      * \note This function does not call serveStaticFile to avoid recursive
      * calls, which can occur when an error happens while serving a static file.

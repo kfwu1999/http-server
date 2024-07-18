@@ -4,6 +4,7 @@
 
 #include <exception>
 #include <filesystem>
+#include <fstream>
 #include <mutex>
 
 #include "request.h"
@@ -48,11 +49,13 @@ void HttpRequest::parse(const std::string& request) {
         }
     }
 
-    //
-    while (std::getline(requestStream, line)) {
-        this->body += line;
+    // GET request does not contain a body
+    if (this->method == "POST") {
+        while (std::getline(requestStream, line)) {
+            this->body += line;
+        }
+        HTTP_INFO("Parsed body of length {}", this->body.size());
     }
-    HTTP_INFO("Parsed body of length {}", this->body.size());
 }
 
 
@@ -71,6 +74,9 @@ std::string HttpRequestHandler::handleRequest(const std::string& request) {
     try {
         if (httpRequest.method == "GET") {
             handleGetRequest(httpRequest, responseBuilder);
+        }
+        else if (httpRequest.method == "POST") {
+            handlePostRequest(httpRequest, responseBuilder);
         }
         else {
             HTTP_ERROR("Unsupported HTTP method: {}", httpRequest.method);
@@ -97,12 +103,28 @@ void HttpRequestHandler::handleGetRequest(HttpRequest& httpRequest, HttpResponse
         httpRequest.path = "/home.html";
 
     // 
-    if (httpRequest.path.substr(0, 5) == "/echo") {
+    if (httpRequest.path == "/echo") {
         handleEcho(httpRequest, responseBuilder);
         HTTP_INFO("Responding to GET request for '/echo'");
     }
     else {
         serveStaticFile(httpRequest, responseBuilder);
+    }
+}
+
+
+void HttpRequestHandler::handlePostRequest(HttpRequest& httpRequest, HttpResponseBuilder& responseBuilder) {
+    // 
+    HTTP_TRACE("Handling GET request for path '{}'", httpRequest.path);
+
+    // 
+    if (httpRequest.path == "/echo") {
+        handleEcho(httpRequest, responseBuilder);
+        HTTP_INFO("Responding to POST request for '/echo'");
+    }
+    else if (httpRequest.path == "/upload") {
+        handleUpload(httpRequest, responseBuilder);
+        HTTP_INFO("Responding to POST request for '/upload'");
     }
 }
 
@@ -126,6 +148,57 @@ void HttpRequestHandler::handleEcho(HttpRequest& httpRequest, HttpResponseBuilde
     // 
     responseBody += "Body:\r\n" + httpRequest.body + "\r\n";
     responseBuilder.setBody(responseBody);
+}
+
+
+void HttpRequestHandler::handleUpload(HttpRequest& httpRequest, HttpResponseBuilder& responseBuilder) {
+    // 
+    responseBuilder.setStatusCode(HttpStatusCode::OK);
+
+    // 
+    std::string uploadFolder = "uploads";
+    std::string uploadFilename = uploadFolder + "/uploaded_file.txt";
+
+    // mkdir
+    try {
+        if (std::filesystem::exists(uploadFolder)) {
+            HTTP_INFO("Directory exist: '/{}'", uploadFolder);
+        } else if (std::filesystem::create_directory(uploadFolder)) {
+            HTTP_INFO("Directory created: '/{}'", uploadFolder);
+        } else {
+            HTTP_ERROR("Failed to create directory '{}'", uploadFolder);
+            throw std::runtime_error("Failed to create directory '" + uploadFolder + "'");
+        }
+    } catch (const std::exception& e) {
+        HTTP_ERROR("Error serving file: {}", e.what());
+        responseBuilder.setStatusCode(HttpStatusCode::InternalServerError);
+        responseBuilder.setHeader("Content-Type", "text/plain");
+        responseBuilder.setBody("Failed to create upload directory.");
+        return;
+    }
+
+    // 
+    try {
+        // 
+        std::ofstream ofs;
+        ofs.open(uploadFilename);
+        if (!ofs.is_open()) {
+            HTTP_ERROR("Failed to open file for writing: '{}'", uploadFilename);
+            throw std::runtime_error("Failed to open file for writing");
+        }
+        ofs << httpRequest.body;
+        ofs.close();
+
+        // 
+        responseBuilder.setStatusCode(HttpStatusCode::OK);
+        responseBuilder.setHeader("Content-Type", "text/plain");
+        responseBuilder.setBody("File uploaded successfully");
+    } catch (const std::exception& e) {
+        HTTP_ERROR("Error serving file: {}", e.what());
+        responseBuilder.setStatusCode(HttpStatusCode::InternalServerError);
+        responseBuilder.setHeader("Content-Type", "text/plain");
+        responseBuilder.setBody("Failed to save the uploaded file.");
+    }
 }
 
 
