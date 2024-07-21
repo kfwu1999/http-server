@@ -27,11 +27,13 @@ curl http://localhost
 ```
 - The default URL of GET method is “home.html”
 
+
 **GET home.html**
 ```sh
 curl http://localhost:8080/home.html
 ```
 - Get server files (example: home.html)
+
 
 **Echo**
 ```sh
@@ -42,13 +44,9 @@ curl http://localhost:8080/echo
 
 ### Static File Serving for GET method
 
-**Demo video**
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/jR403dP_xM4?si=ZpQ780OJhhJx498Z" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-> If the embedded video doesn't work, see [here](https://www.youtube.com/watch?v=jR403dP_xM4).
-
+[Demo video on youtube](https://www.youtube.com/embed/jR403dP_xM4?si=ZpQ780OJhhJx498Z)
 > btw, I use Neovim and tmux. You can check out my configuration [here](https://github.com/kfwu1999/dotfiles).
+
 
 ### Concurrency Test
 **Running a Concurrency Test**
@@ -58,10 +56,7 @@ oha http://localhost:8080
 ```
 - Perform a concurrency test using [oha](https://github.com/hatoo/oha)
 
-**Demo video**
-<iframe width="560" height="315" src="https://www.youtube.com/embed/7mYv4gxpn6Q?si=iEU6MQrQFqOpozDi" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-> If the embedded video doesn't work, see [here](https://youtu.be/7mYv4gxpn6Q?si=ECg7FKkrZeKIQFtF).
+[Demo video on youtube](https://www.youtube.com/watch?v=5g29z_3Lq2c)
 
 
 ### Basic POST Method
