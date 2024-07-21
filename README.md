@@ -44,7 +44,7 @@ curl http://localhost:8080/echo
 
 **Demo video**
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=jR403dP_xM4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/jR403dP_xM4?si=ZpQ780OJhhJx498Z" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 > If the embedded video doesn't work, see [here](https://www.youtube.com/watch?v=jR403dP_xM4).
 
@@ -59,7 +59,7 @@ oha http://localhost:8080
 - Perform a concurrency test using [oha](https://github.com/hatoo/oha)
 
 **Demo video**
-<iframe width="560" height="315" src="https://youtu.be/7mYv4gxpn6Q?si=ECg7FKkrZeKIQFtF" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/7mYv4gxpn6Q?si=iEU6MQrQFqOpozDi" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 > If the embedded video doesn't work, see [here](https://youtu.be/7mYv4gxpn6Q?si=ECg7FKkrZeKIQFtF).
 
