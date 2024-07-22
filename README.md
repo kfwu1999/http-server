@@ -9,6 +9,27 @@ A simple HTTP server for learning purpose. It supports basic GET and POST method
 - [oha](https://github.com/hatoo/oha) (for concurrency testing)
 
 
+## Supported Features
+- **GET Method**
+    - **Basic GET**: Get server files.
+    - **Echo Endpoint**: Echoes the request details.
+    - **Static File Serving**: Serve static files from the server directory.
+
+- **POST Method**
+    - **Echo Endpoint**: Echoes the request details.
+    - **Upload Endpoint**: Uploads content to a default text file.
+
+- **Logging**
+    - Uses [spdlog](https://github.com/gabime/spdlog) for logging.
+
+- **LRU Caching**
+    - When a file is requested, check the cache first. If it exist, serve the file from cache, if not, load from disk and put it into cache.
+    - Caches entries will expire if they are more than 1 minute old.
+
+- **Thread Pooling**
+    - Use STL thread for managing threads.
+
+
 ## How to build and run
 ```sh
 mkdir build
@@ -18,8 +39,7 @@ make -j
 ./http-server
 ```
 
-
-## Supported Features
+## Usage Example
 ### Basic GET method
 **Default (home.html)**
 ```sh
