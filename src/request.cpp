@@ -189,10 +189,10 @@ void HttpRequestHandler::handleUpload(HttpRequest& httpRequest, HttpResponseBuil
         ofs << httpRequest.body;
         ofs.close();
 
-        // 
+        // didn't use status code image, because i want to test POST method in terminal
         responseBuilder.setStatusCode(HttpStatusCode::OK);
         responseBuilder.setHeader("Content-Type", "text/plain");
-        responseBuilder.setBody("File uploaded successfully");
+        responseBuilder.setBody("File uploaded successfully\n");
     } catch (const std::exception& e) {
         HTTP_ERROR("Error serving file: {}", e.what());
         responseBuilder.setStatusCode(HttpStatusCode::InternalServerError);
@@ -216,7 +216,7 @@ void HttpRequestHandler::serveStaticFile(HttpRequest& httpRequest, HttpResponseB
         // minimize the critical section
         {
             std::lock_guard<std::mutex> lock(r_cacheMtx);
-            cacheContent = r_cache.get(filepath);
+            cacheContent = r_cache.getOrDeleteExpired(filepath);
         }
 
         // 
@@ -266,7 +266,7 @@ void HttpRequestHandler::serveStatusCodeImage(HttpResponseBuilder& responseBuild
         // minimize the critical section
         {
             std::lock_guard<std::mutex> lock(r_cacheMtx);
-            cacheContent = r_cache.get(filepath);
+            cacheContent = r_cache.getOrDeleteExpired(filepath);
         }
 
         // 
