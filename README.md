@@ -124,5 +124,5 @@ curl -D - -X POST -H "Content-Type: text/plain" -d "Hello!" http://localhost:808
 
 ## Reference
 - The cat image of status code is from [https://http.cat/](https://http.cat/).
-- The feature inspirations are mostly from [luiscmartinez/C-Web-Server](https://github.com/luiscmartinez/C-Web-Server/tree/master).
+- The feature inspirations are mostly from [bloominstituteoftechnology/C-Web-Server](https://github.com/bloominstituteoftechnology/C-Web-Server).
 - The coding challenge from [CodeCrafters: Build your own HTTP server](https://app.codecrafters.io/courses/http-server) guided the development process.
