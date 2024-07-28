@@ -7,10 +7,14 @@
 #ifndef ThreadPool_HPP_
 #define ThreadPool_HPP_
 
-#include <mutex>
+#include <vector>
 #include <queue>
-#include <thread>
+#include <memory>
+#include <mutex>
 #include <functional>
+#include <thread>
+#include <condition_variable>
+#include <atomic>
 
 namespace http {
 

@@ -2,6 +2,7 @@
  */
 
 #include <fstream>
+#include <filesystem>
 
 #include "file.h"
 #include "log.h"
